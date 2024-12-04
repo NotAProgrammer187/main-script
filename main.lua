@@ -33,8 +33,8 @@ local Window = Rayfield:CreateWindow({
     }
  })
 
- local Main = Window:CreateTab("Main", nil) -- Title, Image
- local AutomaticSection = Tab:CreateSection("👁 Automatic")
+ local MainTab = Window:CreateTab("Main", nil) -- Title, Image
+ local AutomaticSection = MainTab:CreateSection("👁 Automatic")
 
 
  Rayfield:Notify({
@@ -44,9 +44,20 @@ local Window = Rayfield:CreateWindow({
    Image = "gitlab",
 })
 
-local Button = Tab:CreateButton({
-   Name = "Button Example",
+local Button = MainTab:CreateButton({
+   Name = "Auto Cast",
    Callback = function()
-   -- The function that takes place when the button is pressed
+      while wait(0) do
+         game:GetService("Players").LocalPlayer.Backpack["Flimsy Rod"].events.cast:FireServer(100,1)
+      end
+   end,
+})
+
+local Button = MainTab:CreateButton({
+   Name = "Auto Equip Best",
+   Callback = function()
+      while wait(0) do
+         game:GetService("ReplicatedStorage").events.reelfinished:FireServer(100,false)
+      end
    end,
 })
