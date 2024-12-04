@@ -33,7 +33,8 @@ local Window = Rayfield:CreateWindow({
     }
  })
 
- local Main = Window:CreateTab("👁 Automatic", nil) -- Title, Image
+ local Main = Window:CreateTab("Main", nil) -- Title, Image
+ local AutomaticSection = Tab:CreateSection("👁 Automatic")
 
 
  Rayfield:Notify({
@@ -41,4 +42,11 @@ local Window = Rayfield:CreateWindow({
    Content = "Notification Content",
    Duration = 6.5,
    Image = "gitlab",
+})
+
+local Button = Tab:CreateButton({
+   Name = "Button Example",
+   Callback = function()
+   -- The function that takes place when the button is pressed
+   end,
 })
