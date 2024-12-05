@@ -44,6 +44,74 @@ local Window = Rayfield:CreateWindow({
    Image = "gitlab",
 })
 
+-- AutoShake Toggle
+local autoShakeEnabled = false
+local autoShakeConnection
+
+-- AutoShake Functionality
+local function autoShake()
+    if ShakeMode == "Navigation" then
+        task.wait()
+        xpcall(function()
+            local shakeui = PlayerGui:FindFirstChild("shakeui")
+            if not shakeui then return end
+            local safezone = shakeui:FindFirstChild("safezone")
+            local button = safezone and safezone:FindFirstChild("button")
+            task.wait(0.2)
+            GuiService.SelectedObject = button
+            if GuiService.SelectedObject == button then
+                VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+                VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+            end
+            task.wait(0.1)
+            GuiService.SelectedObject = nil
+        end, function(err)
+        end)
+    elseif ShakeMode == "Mouse" then
+        task.wait()
+        xpcall(function()
+            local shakeui = PlayerGui:FindFirstChild("shakeui")
+            if not shakeui then return end
+            local safezone = shakeui:FindFirstChild("safezone")
+            local button = safezone and safezone:FindFirstChild("button")
+            local pos = button.AbsolutePosition
+            local size = button.AbsoluteSize
+            VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, true, LocalPlayer, 0)
+            VirtualInputManager:SendMouseButtonEvent(pos.X + size.X / 2, pos.Y + size.Y / 2, 0, false, LocalPlayer, 0)
+        end, function(err)
+        end)
+    end
+end
+
+-- Start AutoShake
+local function startAutoShake()
+    if autoShakeConnection or not autoShakeEnabled then return end
+    autoShakeConnection = RunService.RenderStepped:Connect(autoShake)
+end
+
+-- Stop AutoShake
+local function stopAutoShake()
+    if autoShakeConnection then
+        autoShakeConnection:Disconnect()
+        autoShakeConnection = nil
+    end
+end
+
+-- Toggle Button for AutoShake
+local AutoShakeToggle = MainTab:CreateToggle({
+   Name = "Auto Shake",
+   CurrentValue = false,
+   Flag = "AutoShakeToggle",
+   Callback = function(Value)
+       autoShakeEnabled = Value
+       if autoShakeEnabled then
+           startAutoShake()
+       else
+           stopAutoShake()
+       end
+   end,
+})
+
 local Button = MainTab:CreateButton({
    Name = "Auto Cast",
    Callback = function()
@@ -52,6 +120,8 @@ local Button = MainTab:CreateButton({
       end
    end,
 })
+
+
 
 local Button = MainTab:CreateButton({
    Name = "Auto Equip Best",
